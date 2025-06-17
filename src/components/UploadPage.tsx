@@ -169,7 +169,7 @@ const UploadPage = () => {
             accept="*/*"
           />
           <p className="text-xs text-white/60 mt-4">
-            Maximum file size: 100MB
+            Maximum file size: 5GB
           </p>
         </div>
       ) : (

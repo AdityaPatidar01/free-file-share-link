@@ -47,7 +47,7 @@ const Index = () => {
 
         <div className="text-center mt-12">
           <p className="text-white/70 text-sm">
-            Files are automatically deleted after 24 hours • Maximum file size: 100MB
+            Files are automatically deleted after 24 hours • Maximum file size: 5GB
           </p>
         </div>
       </div>

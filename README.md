@@ -1,4 +1,3 @@
-
 # FileShare - Free File Transfer System
 
 A modern, responsive file transfer platform that allows users to send and receive files between devices over the internet without any cost or registration.
@@ -11,7 +10,7 @@ A modern, responsive file transfer platform that allows users to send and receiv
 - **Responsive Design**: Works seamlessly on desktop and mobile devices
 - **No Registration**: Start sharing files immediately
 - **Auto-Expiry**: Files automatically deleted after 24 hours
-- **File Size Limit**: 100MB maximum to prevent abuse
+- **File Size Limit**: 5GB maximum to accommodate large files
 
 ## 🛠️ Tech Stack
 
@@ -118,7 +117,7 @@ REACT_APP_API_URL=http://your-public-ip:8080
 
 ## 🔒 Security Features
 
-- **File Size Limits**: Maximum 100MB per file
+- **File Size Limits**: Maximum 5GB per file
 - **Auto-Expiry**: Files deleted after 24 hours
 - **Unique Codes**: Cryptographically secure share codes
 - **Path Traversal Protection**: Secure file storage and retrieval
@@ -160,7 +159,7 @@ npm run build
 Create a `.env` file in the frontend root:
 ```env
 REACT_APP_API_URL=http://localhost:8080
-REACT_APP_MAX_FILE_SIZE=104857600
+REACT_APP_MAX_FILE_SIZE=5368709120
 REACT_APP_FILE_EXPIRY_HOURS=24
 ```
 
@@ -171,7 +170,7 @@ spring.datasource.username=your_username
 spring.datasource.password=your_password
 spring.jpa.hibernate.ddl-auto=update
 file.upload.directory=./uploads/
-file.max.size=104857600
+file.max.size=5368709120
 file.expiry.hours=24
 ```
 
