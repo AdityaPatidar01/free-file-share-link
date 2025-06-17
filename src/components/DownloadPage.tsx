@@ -57,8 +57,9 @@ const DownloadPage = () => {
       // Simulate API call to check file existence
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      // Check if the share code exists in our mock database
-      const foundFile = mockFiles[shareCode.toUpperCase()];
+      // Check if the share code exists in our mock database (case insensitive)
+      const normalizedCode = shareCode.trim().toUpperCase();
+      const foundFile = mockFiles[normalizedCode];
       
       if (foundFile) {
         setFileInfo(foundFile);
@@ -68,15 +69,20 @@ const DownloadPage = () => {
         });
       } else {
         // File not found
-        throw new Error('File not found');
+        setFileInfo(null);
+        toast({
+          title: "File Not Found",
+          description: "The share code you entered is invalid or expired.",
+          variant: "destructive",
+        });
       }
     } catch (error) {
+      setFileInfo(null);
       toast({
         title: "File Not Found",
-        description: "The share code you entered is invalid or expired.",
+        description: "There was an error searching for the file.",
         variant: "destructive",
       });
-      setFileInfo(null);
     } finally {
       setLoading(false);
     }
@@ -111,6 +117,16 @@ const DownloadPage = () => {
   const resetSearch = () => {
     setShareCode('');
     setFileInfo(null);
+    setLoading(false);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.toUpperCase();
+    setShareCode(value);
+    // Clear file info when user starts typing a new code
+    if (fileInfo && value !== shareCode) {
+      setFileInfo(null);
+    }
   };
 
   return (
@@ -120,9 +136,14 @@ const DownloadPage = () => {
           <Input
             placeholder="Enter share code (e.g., ABC123)"
             value={shareCode}
-            onChange={(e) => setShareCode(e.target.value.toUpperCase())}
+            onChange={handleInputChange}
             className="text-center font-mono text-lg"
             maxLength={6}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !loading && shareCode.trim()) {
+                handleSearch();
+              }
+            }}
           />
           <Button
             onClick={handleSearch}
