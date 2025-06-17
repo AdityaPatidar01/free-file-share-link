@@ -17,6 +17,30 @@ const DownloadPage = () => {
 
   const { toast } = useToast();
 
+  // Mock file database based on share codes
+  const mockFiles: Record<string, { name: string; size: number; uploadDate: string }> = {
+    'ABC123': {
+      name: "sample-document.pdf",
+      size: 2.5 * 1024 * 1024, // 2.5 MB
+      uploadDate: new Date().toLocaleDateString(),
+    },
+    'XYZ789': {
+      name: "presentation.pptx",
+      size: 15.8 * 1024 * 1024, // 15.8 MB
+      uploadDate: new Date(Date.now() - 86400000).toLocaleDateString(), // yesterday
+    },
+    'DEF456': {
+      name: "video-file.mp4",
+      size: 250 * 1024 * 1024, // 250 MB
+      uploadDate: new Date(Date.now() - 172800000).toLocaleDateString(), // 2 days ago
+    },
+    'GHI321': {
+      name: "archive.zip",
+      size: 1.2 * 1024 * 1024 * 1024, // 1.2 GB
+      uploadDate: new Date().toLocaleDateString(),
+    }
+  };
+
   const handleSearch = async () => {
     if (!shareCode.trim()) {
       toast({
@@ -33,17 +57,19 @@ const DownloadPage = () => {
       // Simulate API call to check file existence
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      // Mock file info - replace with actual backend call
-      setFileInfo({
-        name: "sample-document.pdf",
-        size: 2.5 * 1024 * 1024, // 2.5 MB
-        uploadDate: new Date().toLocaleDateString(),
-      });
+      // Check if the share code exists in our mock database
+      const foundFile = mockFiles[shareCode.toUpperCase()];
       
-      toast({
-        title: "File Found!",
-        description: "Click download to get your file.",
-      });
+      if (foundFile) {
+        setFileInfo(foundFile);
+        toast({
+          title: "File Found!",
+          description: "Click download to get your file.",
+        });
+      } else {
+        // File not found
+        throw new Error('File not found');
+      }
     } catch (error) {
       toast({
         title: "File Not Found",
@@ -112,7 +138,8 @@ const DownloadPage = () => {
         </div>
         
         <p className="text-xs text-white/60 text-center">
-          Enter the 6-character code shared with you
+          Enter the 6-character code shared with you<br />
+          <span className="text-white/40">Try: ABC123, XYZ789, DEF456, or GHI321</span>
         </p>
       </div>
 
