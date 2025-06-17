@@ -17,30 +17,6 @@ const DownloadPage = () => {
 
   const { toast } = useToast();
 
-  // Mock file database based on share codes
-  const mockFiles: Record<string, { name: string; size: number; uploadDate: string }> = {
-    'ABC123': {
-      name: "sample-document.pdf",
-      size: 2.5 * 1024 * 1024, // 2.5 MB
-      uploadDate: new Date().toLocaleDateString(),
-    },
-    'XYZ789': {
-      name: "presentation.pptx",
-      size: 15.8 * 1024 * 1024, // 15.8 MB
-      uploadDate: new Date(Date.now() - 86400000).toLocaleDateString(), // yesterday
-    },
-    'DEF456': {
-      name: "video-file.mp4",
-      size: 250 * 1024 * 1024, // 250 MB
-      uploadDate: new Date(Date.now() - 172800000).toLocaleDateString(), // 2 days ago
-    },
-    'GHI321': {
-      name: "archive.zip",
-      size: 1.2 * 1024 * 1024 * 1024, // 1.2 GB
-      uploadDate: new Date().toLocaleDateString(),
-    }
-  };
-
   const handleSearch = async () => {
     if (!shareCode.trim()) {
       toast({
@@ -57,32 +33,24 @@ const DownloadPage = () => {
       // Simulate API call to check file existence
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      // Check if the share code exists in our mock database (case insensitive)
-      const normalizedCode = shareCode.trim().toUpperCase();
-      const foundFile = mockFiles[normalizedCode];
+      // Mock file info - replace with actual backend call
+      setFileInfo({
+        name: "sample-document.pdf",
+        size: 2.5 * 1024 * 1024, // 2.5 MB
+        uploadDate: new Date().toLocaleDateString(),
+      });
       
-      if (foundFile) {
-        setFileInfo(foundFile);
-        toast({
-          title: "File Found!",
-          description: "Click download to get your file.",
-        });
-      } else {
-        // File not found
-        setFileInfo(null);
-        toast({
-          title: "File Not Found",
-          description: "The share code you entered is invalid or expired.",
-          variant: "destructive",
-        });
-      }
+      toast({
+        title: "File Found!",
+        description: "Click download to get your file.",
+      });
     } catch (error) {
-      setFileInfo(null);
       toast({
         title: "File Not Found",
-        description: "There was an error searching for the file.",
+        description: "The share code you entered is invalid or expired.",
         variant: "destructive",
       });
+      setFileInfo(null);
     } finally {
       setLoading(false);
     }
@@ -117,16 +85,6 @@ const DownloadPage = () => {
   const resetSearch = () => {
     setShareCode('');
     setFileInfo(null);
-    setLoading(false);
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.toUpperCase();
-    setShareCode(value);
-    // Clear file info when user starts typing a new code
-    if (fileInfo && value !== shareCode) {
-      setFileInfo(null);
-    }
   };
 
   return (
@@ -136,14 +94,9 @@ const DownloadPage = () => {
           <Input
             placeholder="Enter share code (e.g., ABC123)"
             value={shareCode}
-            onChange={handleInputChange}
+            onChange={(e) => setShareCode(e.target.value.toUpperCase())}
             className="text-center font-mono text-lg"
             maxLength={6}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && !loading && shareCode.trim()) {
-                handleSearch();
-              }
-            }}
           />
           <Button
             onClick={handleSearch}
@@ -159,8 +112,7 @@ const DownloadPage = () => {
         </div>
         
         <p className="text-xs text-white/60 text-center">
-          Enter the 6-character code shared with you<br />
-          <span className="text-white/40">Try: ABC123, XYZ789, DEF456, or GHI321</span>
+          Enter the 6-character code shared with you
         </p>
       </div>
 
